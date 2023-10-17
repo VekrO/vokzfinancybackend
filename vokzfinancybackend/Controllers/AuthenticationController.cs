@@ -73,6 +73,7 @@ namespace VokzFinancy.Controllers
                 {
                     Nome = "Conta Padrão",
                     Usuario = usuario,
+                    Padrao = true,
                     Descricao = "Conta Padrão",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow

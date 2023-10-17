@@ -68,6 +68,20 @@ namespace VokzFinancy.Repository {
             }
 
         }
+            
+        public async Task<Conta> GetContaPadraoByIdUsuarioAsync(int idUsuario)
+        {
+            try
+            {
+
+                Conta conta = await _context.Contas.Where(c => c.UsuarioId == idUsuario).FirstOrDefaultAsync();
+                return conta;    
+
+            } catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        } 
 
     }
 

@@ -7,6 +7,7 @@ namespace VokzFinancy.DTOs {
         public int? Id {get; set;}
         public string? Nome {get; set;}
         public int UsuarioId { get; set; } // Chave estrangeira para o usuário
+        public bool Padrao { get; set; }
         public string? Descricao { get; set; }
 
     }

@@ -8,7 +8,9 @@ namespace VokzFinancy.Repository {
         Task<Conta> GetContaByIdAsync(int idUsuario);
         Task<double> GetDespesasByIdUsuarioAsync(int idConta);
         Task<double> GetReceitasByIdUsuarioAsync(int idConta);
-           
+        Task<Conta> GetContaPadraoByIdUsuarioAsync(int idUsuario);
+
+
     }
 
 }

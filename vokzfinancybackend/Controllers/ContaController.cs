@@ -61,10 +61,23 @@ namespace VokzFinancy.Controllers
                     return BadRequest("O usuário não existe!");
                 }
 
+                // Verifica se já existe uma conta padrão para o usuário.
+                if(model.Padrao)
+                {
+
+                    Conta contaPadrao = await _unitOfWork.ContaRepository.GetContaPadraoByIdUsuarioAsync(model.UsuarioId);
+                    if(contaPadrao != null)
+                    {
+                        return BadRequest("Você já possuí uma conta padrão!");
+                    }
+
+                }
+
                 Conta conta = new Conta()
                 {
                     Nome = model.Nome,
                     Usuario = usuario,
+                    Padrao = model.Padrao,
                     Descricao = model.Descricao,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
@@ -72,8 +85,7 @@ namespace VokzFinancy.Controllers
 
                 await _unitOfWork.ContaRepository.Add(conta);
 
-                // Use "GetByIdAsync" como o nome da ação.
-                return CreatedAtAction(nameof(GetByIdAsync), new { id = conta.Id }, conta);
+                return Ok(conta);
 
             } catch (Exception ex) {
                 throw new Exception(ex.Message);
@@ -94,6 +106,18 @@ namespace VokzFinancy.Controllers
             
                 if(contaDb == null) {
                     return NotFound("Nenhum registro encontrado!");
+                }
+
+                // Verifica se já existe uma conta padrão para o usuário.
+                if (model.Padrao)
+                {
+
+                    Conta contaPadrao = await _unitOfWork.ContaRepository.GetContaPadraoByIdUsuarioAsync((int)model.UsuarioId);
+                    if (contaPadrao != null)
+                    {
+                        return BadRequest("Você já possuí uma conta padrão!");
+                    }
+
                 }
 
                 Conta conta = _mapper.Map(model, contaDb);
@@ -186,7 +210,7 @@ namespace VokzFinancy.Controllers
                 await _unitOfWork.BeginTransactionAsync();
                 conta.Usuario = null;
                 conta.UsuarioId = null;
-                await _unitOfWork.ContaRepository.Update(conta);
+                await _unitOfWork.ContaRepository.Delete(conta);
                 await _unitOfWork.CommitAsync();
 
                 return Ok();
