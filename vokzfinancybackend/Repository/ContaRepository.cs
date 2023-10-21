@@ -1,8 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using VokzFinancy.Data;
 using VokzFinancy.Models;
+using vokzfinancybackend.Repository.Interfaces;
 
-namespace VokzFinancy.Repository {
+namespace VokzFinancy.Repository
+{
 
     public class ContaRepository : Repository<Conta>, IContaRepository
     {
@@ -74,7 +76,7 @@ namespace VokzFinancy.Repository {
             try
             {
 
-                Conta conta = await _context.Contas.Where(c => c.UsuarioId == idUsuario).FirstOrDefaultAsync();
+                Conta conta = await _context.Contas.Where(c => c.UsuarioId == idUsuario && c.Padrao).FirstOrDefaultAsync();
                 return conta;    
 
             } catch (Exception ex)

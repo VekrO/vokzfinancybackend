@@ -171,12 +171,72 @@ namespace VokzFinancy.Controllers {
 
         }
 
+        [HttpGet("{id}/conta/{idConta}/despesas/valor")]
+        public async Task<ActionResult<double>> GetAllDespesasByIdUsuarioAndIdContaAsync(int id, int idConta)
+        {
+
+            try
+            {
+
+                double despesas = await _unitOfWork.UsuarioRepository.GetAllDespesasByIdUsuarioAndIdContaAsync(id, idConta);
+
+                return Ok(despesas);
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+
+            }
+
+        }
+
+        [HttpGet("{id}/conta/{idConta}/receitas/valor")]
+        public async Task<ActionResult<double>> GetAllReceitasByIdUsuarioAndIdContaAsync(int id, int idConta)
+        {
+
+            try
+            {
+
+                double receitas = await _unitOfWork.UsuarioRepository.GetAllReceitasByIdUsuarioAndIdContaAsync(id, idConta);
+
+                return Ok(receitas);
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+
+            }
+
+        }
+
         [HttpGet("{id}/saldo")]
         public async Task<ActionResult<double>> GetSaldoByIdUsuarioAsync(int id) {
             try
             {
 
                 double saldo = await _unitOfWork.UsuarioRepository.GetSaldoByIdUsuarioAsync(id);
+                return Ok(saldo);
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+
+            }
+        }
+
+        [HttpGet("{id}/conta/{idConta}/saldo")]
+        public async Task<ActionResult<double>> GetSaldoByIdUsuarioAndIdContaAsync(int id, int idConta)
+        {
+            try
+            {
+
+                double saldo = await _unitOfWork.UsuarioRepository.GetSaldoByIdUsuarioAndIdContaAsync(id, idConta);
                 return Ok(saldo);
 
             }

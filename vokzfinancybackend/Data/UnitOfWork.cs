@@ -1,8 +1,10 @@
 using System.Transactions;
 using Microsoft.EntityFrameworkCore.Storage;
 using VokzFinancy.Repository;
+using vokzfinancybackend.Repository.Interfaces;
 
-namespace VokzFinancy.Data {
+namespace VokzFinancy.Data
+{
 
     public class UnitOfWork : IUnitOfWork {
 

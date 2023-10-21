@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq.Expressions;
 using VokzFinancy.Data;
 using VokzFinancy.DTOs;
 using VokzFinancy.Models;
@@ -24,14 +25,14 @@ namespace VokzFinancy.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Conta>> GetByIdAsync(int id)
+        [HttpGet("{id}/usuario/{idUsuario}")]
+        public async Task<ActionResult<Conta>> GetByIdAsync(int id, int idUsuario)
         {
 
             try
             {
 
-                Conta conta = await _unitOfWork.ContaRepository.GetByIdAsync(x => x.Id == id);
+                Conta conta = await _unitOfWork.ContaRepository.GetByIdAsync(x => x.Id == id && x.UsuarioId == idUsuario);
                 if (conta == null)
                 {
                     return NotFound("Nenhuma conta foi encontrada com esse ID!");
@@ -94,17 +95,18 @@ namespace VokzFinancy.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<ContaDTO>> Put(int id, Conta model) {
+        public async Task<ActionResult<ContaDTO>> Put(int id, ContaDTO model) {
 
             try {
 
                 if(id != model.Id) {
                     return BadRequest("Confira os dados enviados e tente novamente!");
                 } 
-
+                
                 Conta contaDb = await _unitOfWork.ContaRepository.GetByIdAsync(x => x.Id == id);
-            
-                if(contaDb == null) {
+
+                if (contaDb == null)
+                {
                     return NotFound("Nenhum registro encontrado!");
                 }
 
@@ -113,18 +115,21 @@ namespace VokzFinancy.Controllers
                 {
 
                     Conta contaPadrao = await _unitOfWork.ContaRepository.GetContaPadraoByIdUsuarioAsync((int)model.UsuarioId);
-                    if (contaPadrao != null)
+                    if (contaPadrao != null && model.Id != contaPadrao.Id)
                     {
                         return BadRequest("Você já possuí uma conta padrão!");
                     }
-
                 }
 
-                Conta conta = _mapper.Map(model, contaDb);
+                contaDb.Nome = model.Nome;
+                contaDb.Descricao = model.Descricao;
+                contaDb.Padrao = model.Padrao;
+                contaDb.UpdatedAt = DateTime.UtcNow;
+   
+                await _unitOfWork.ContaRepository.Update(contaDb);
 
-                await _unitOfWork.ContaRepository.Update(conta);
+                ContaDTO contaDto = _mapper.Map<Conta, ContaDTO>(contaDb);
 
-                ContaDTO contaDto = _mapper.Map<Conta, ContaDTO>(conta);
                 return Ok(contaDto);
 
             } catch (Exception ex) {
@@ -219,6 +224,28 @@ namespace VokzFinancy.Controllers
             catch (Exception ex)
             {
                 await _unitOfWork.RollbackAsync();
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+        [HttpGet("usuario/{idUsuario}/padrao")]
+        public async Task<ActionResult<ContaDTO>> GetContaPadraoByIdUsuarioAsync(int idUsuario)
+        {
+
+            try
+            {
+
+                Conta conta = await _unitOfWork.ContaRepository.GetContaPadraoByIdUsuarioAsync(idUsuario);
+                if(conta == null)
+                {
+                    return BadRequest("Nenhuma conta foi encontrada para esse usuário!");
+                }
+                ContaDTO contaDto = _mapper.Map<Conta, ContaDTO>(conta);
+                return Ok(contaDto);
+
+            } catch (Exception ex)
+            {
                 throw new Exception(ex.Message);
             }
 

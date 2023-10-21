@@ -1,8 +1,10 @@
 using VokzFinancy.Models;
 
-namespace VokzFinancy.Repository {
+namespace vokzfinancybackend.Repository.Interfaces
+{
 
-    public interface IContaRepository : IRepository<Conta> {
+    public interface IContaRepository : IRepository<Conta>
+    {
 
         Task<ICollection<Conta>> GetAllByIdUsuarioAsync(int idUsuario);
         Task<Conta> GetContaByIdAsync(int idUsuario);

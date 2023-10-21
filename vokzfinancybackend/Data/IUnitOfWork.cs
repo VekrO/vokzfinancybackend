@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore.Storage;
-using VokzFinancy.Repository;
+using vokzfinancybackend.Repository.Interfaces;
 
-namespace VokzFinancy.Data {
+namespace VokzFinancy.Data
+{
 
     public interface IUnitOfWork : IDisposable {
 

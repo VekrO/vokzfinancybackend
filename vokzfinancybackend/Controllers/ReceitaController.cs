@@ -22,11 +22,15 @@ namespace VokzFinancy.Controllers {
             _mapper = mapper;
         }   
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ReceitaDTO>> GetByIdAsync(int id) {
+        [HttpGet("{id}/usuario/{idUsuario}")]
+        public async Task<ActionResult<ReceitaDTO>> GetByIdAsync(int id, int idUsuario) {
             try {
-                Receita receita = await _unitOfWork.ReceitaRepository.GetByIdAsync(x => x.Id == id);
-                if(receita == null) {
+                Receita receita = await _unitOfWork.ReceitaRepository.GetByIdIncludesAsync(x => x.Id == id, x => x.Conta);
+                if (receita.Conta.UsuarioId != idUsuario)
+                {
+                    return BadRequest("Você não tem permissão para acessar esse registro!");
+                }
+                if (receita == null) {
                     return NotFound("Nenhum registro foi encontrado!");
                 }
                 ReceitaDTO receitaDto = _mapper.Map<Receita, ReceitaDTO>(receita);

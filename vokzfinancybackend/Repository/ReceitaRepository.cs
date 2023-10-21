@@ -1,8 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using VokzFinancy.Data;
 using VokzFinancy.Models;
+using vokzfinancybackend.Repository.Interfaces;
 
-namespace VokzFinancy.Repository {
+namespace VokzFinancy.Repository
+{
 
     public class ReceitaRepository : Repository<Receita>, IReceitaRepository
     {

@@ -1,8 +1,10 @@
 using VokzFinancy.Models;
 
-namespace VokzFinancy.Repository {
+namespace vokzfinancybackend.Repository.Interfaces
+{
 
-    public interface IDespesaRepository : IRepository<Despesa> {
+    public interface IDespesaRepository : IRepository<Despesa>
+    {
 
         Task<IEnumerable<Despesa>> GetByIdContaAsync(int idUsuario);
         Task<IEnumerable<Despesa>> GetVencidoByIdContaAsync(int idUsuario);

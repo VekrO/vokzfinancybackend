@@ -3,9 +3,10 @@ using System.Linq.Expressions;
 using Azure;
 using Microsoft.EntityFrameworkCore;
 using VokzFinancy.Data;
-using VokzFinancy.Repository;
+using vokzfinancybackend.Repository.Interfaces;
 
-namespace VokzFinancy.Repository {
+namespace VokzFinancy.Repository
+{
 
     public class Repository<T> : IRepository<T> where T : class {
 
@@ -19,7 +20,22 @@ namespace VokzFinancy.Repository {
         }
 
         public async Task<T> GetByIdAsync(Expression<Func<T, bool>> predicate) {
-            return await _context.Set<T>().AsNoTracking().SingleOrDefaultAsync(predicate);
+            return await _context.Set<T>().SingleOrDefaultAsync(predicate);
+        }
+        public async Task<T> GetByIdIncludesAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
+        {
+
+            IQueryable<T> query = _context.Set<T>();
+
+            IQueryable<T> result = includes.Aggregate(query, (current, include) => current.Include(include));
+
+            if(predicate != null)
+            {
+                result = result.Where(predicate);
+            }
+
+            return await result.FirstOrDefaultAsync();
+
         }
 
         public async Task<IEnumerable<T>> GetAllAsync() {
