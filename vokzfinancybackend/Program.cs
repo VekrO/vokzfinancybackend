@@ -48,7 +48,7 @@ builder.Services.AddCors(options => {
 
     options.AddPolicy("AllowVokzFinancy", builder =>
     {
-        builder.WithOrigins("https://vokzfinancyfront.vercel.app", "http://localhost:4200")
+        builder.WithOrigins("https://vokzfinancy.app/", "http://localhost:4200")
                .AllowAnyMethod()
                .AllowAnyHeader()
                .AllowCredentials(); // Permitir credenciais
