@@ -362,3 +362,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /vokzfinancybackend/appsettings.Production.json
+/vokzfinancybackend/appsettings.Production.json
