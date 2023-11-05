@@ -9,6 +9,7 @@ namespace VokzFinancy.DTOs.Mapper {
         public EntityMappingProfile() {
             CreateMap<Usuario, UsuarioDTO>().ReverseMap();
             CreateMap<Despesa, DespesaDTO>().ReverseMap();
+            CreateMap<Despesa, DespesaGraficoDTO>().ReverseMap();
             CreateMap<Receita, ReceitaDTO>().ReverseMap();
             CreateMap<Conta, ContaDTO>().ReverseMap();
         }

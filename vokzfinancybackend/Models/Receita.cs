@@ -10,6 +10,7 @@ namespace VokzFinancy.Models {
         public string? Titulo { get; set; }
         public string? Descricao { get; set; }
         public double Valor { get; set; }
+        public bool? Paga { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         [Column(TypeName="Date")]        

@@ -10,6 +10,7 @@ namespace VokzFinancy.DTOs {
         public bool? Paga {get; set;}
         public string? Descricao { get; set; }
         public double Valor { get; set; }
+        public bool Vencida { get; set; }
         [Column(TypeName="Date")]
         public DateTime Vencimento { get; set; }
     }

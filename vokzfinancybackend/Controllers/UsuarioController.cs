@@ -129,14 +129,14 @@ namespace VokzFinancy.Controllers {
                
         }
 
-        [HttpGet("{id}/despesas/valor")]
-        public async Task<ActionResult<double>> GetAllDespesasByIdUsuarioAsync(int id)
+        [HttpGet("{id}/despesas/valor/dtIni/{dtIni}/dtFim/{dtFim}")]
+        public async Task<ActionResult<double>> GetAllDespesasByIdUsuarioAsync(int id, DateTime dtIni, DateTime dtFim)
         {
 
             try
             {
 
-                double despesas = await _unitOfWork.UsuarioRepository.GetAllDespesasByIdUsuarioAsync(id);
+                double despesas = await _unitOfWork.UsuarioRepository.GetAllDespesasByIdUsuarioAsync(id, dtIni, dtFim);
 
                 return Ok(despesas);
 
@@ -150,14 +150,14 @@ namespace VokzFinancy.Controllers {
 
         }
 
-        [HttpGet("{id}/receitas/valor")]
-        public async Task<ActionResult<double>> GetAllReceitasByIdUsuarioAsync(int id)
+        [HttpGet("{id}/receitas/valor/dtIni/{dtIni}/dtFim/{dtFim}")]
+        public async Task<ActionResult<double>> GetAllReceitasByIdUsuarioAsync(int id, DateTime dtIni, DateTime dtFim)
         {
 
             try
             {
 
-                double receitas = await _unitOfWork.UsuarioRepository.GetAllReceitasByIdUsuarioAsync(id);
+                double receitas = await _unitOfWork.UsuarioRepository.GetAllReceitasByIdUsuarioAsync(id, dtIni, dtFim);
 
                 return Ok(receitas);
 
@@ -171,14 +171,14 @@ namespace VokzFinancy.Controllers {
 
         }
 
-        [HttpGet("{id}/conta/{idConta}/despesas/valor")]
-        public async Task<ActionResult<double>> GetAllDespesasByIdUsuarioAndIdContaAsync(int id, int idConta)
+        [HttpGet("{id}/conta/{idConta}/despesas/valor/dtIni/{dtIni}/dtFim/{dtFim}")]
+        public async Task<ActionResult<double>> GetAllDespesasByIdUsuarioAndIdContaAsync(int id, int idConta, DateTime dtIni, DateTime dtFim)
         {
 
             try
             {
 
-                double despesas = await _unitOfWork.UsuarioRepository.GetAllDespesasByIdUsuarioAndIdContaAsync(id, idConta);
+                double despesas = await _unitOfWork.UsuarioRepository.GetAllDespesasByIdUsuarioAndIdContaAsync(id, idConta, dtIni, dtFim);
 
                 return Ok(despesas);
 
@@ -192,14 +192,14 @@ namespace VokzFinancy.Controllers {
 
         }
 
-        [HttpGet("{id}/conta/{idConta}/receitas/valor")]
-        public async Task<ActionResult<double>> GetAllReceitasByIdUsuarioAndIdContaAsync(int id, int idConta)
+        [HttpGet("{id}/conta/{idConta}/receitas/valor/dtIni/{dtIni}/dtFim/{dtFim}")]
+        public async Task<ActionResult<double>> GetAllReceitasByIdUsuarioAndIdContaAsync(int id, int idConta, DateTime dtIni, DateTime dtFim)
         {
 
             try
             {
 
-                double receitas = await _unitOfWork.UsuarioRepository.GetAllReceitasByIdUsuarioAndIdContaAsync(id, idConta);
+                double receitas = await _unitOfWork.UsuarioRepository.GetAllReceitasByIdUsuarioAndIdContaAsync(id, idConta, dtIni, dtFim);
 
                 return Ok(receitas);
 

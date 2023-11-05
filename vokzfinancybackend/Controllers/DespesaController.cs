@@ -9,7 +9,7 @@ using VokzFinancy.Models;
 namespace VokzFinancy.Controllers {
 
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/v1/[controller]")]
     public class DespesaController : ControllerBase {
 
@@ -129,12 +129,25 @@ namespace VokzFinancy.Controllers {
             }
         }
 
-        [HttpGet("conta/{idConta}")]
-        public async Task<ActionResult<IEnumerable<DespesaDTO>>> GetByIdContaAsync(int idConta) {
+        [HttpGet("conta/{idConta}/dtIni/{dtIni}/dtFim/{dtFim}")]
+        public async Task<ActionResult<IEnumerable<DespesaDTO>>> GetByIdContaAsync(int idConta, DateTime dtIni, DateTime dtFim) {
 
             try {
 
-                IEnumerable<Despesa> despesas = await _unitOfWork.DespesaRepository.GetByIdContaAsync(idConta);
+                IEnumerable<Despesa> despesas = await _unitOfWork.DespesaRepository.GetByIdContaAsync(idConta, dtIni, dtFim);
+
+
+                foreach(Despesa despesa in despesas)
+                {   
+
+                    if (despesa.Vencimento < DateTime.UtcNow.Date && despesa.Paga == false) {
+                        despesa.Vencida = true;
+                    } else
+                    {
+                        despesa.Vencida = false;
+                    }
+                }
+
                 IEnumerable<DespesaDTO> despesasDto = _mapper.Map<IEnumerable<Despesa>, IEnumerable<DespesaDTO>>(despesas);
 
                 return Ok(despesasDto);
@@ -145,22 +158,12 @@ namespace VokzFinancy.Controllers {
 
         }
 
-        [HttpGet("conta/{idConta}/vencido")]
-        public async Task<ActionResult<IEnumerable<DespesaDTO>>> GetVencidoByIdContaAsync(int idConta) {
+        [HttpGet("conta/{idConta}/vencido/dtIni/{dtIni}/dtFim/{dtFim}")]
+        public async Task<ActionResult<IEnumerable<DespesaDTO>>> GetVencidoByIdContaAsync(int idConta, DateTime dtIni, DateTime dtFim) {
             try {
-                IEnumerable<Despesa> despesas = await _unitOfWork.DespesaRepository.GetVencidoByIdContaAsync(idConta);
+                IEnumerable<Despesa> despesas = await _unitOfWork.DespesaRepository.GetVencidoByIdContaAsync(idConta, dtIni, dtFim);
                 IEnumerable<DespesaDTO> despesasDto = _mapper.Map<IEnumerable<Despesa>, IEnumerable<DespesaDTO>>(despesas);
                 return Ok(despesasDto);
-            } catch (Exception ex) {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        [HttpGet("conta/{idConta}/valor")]
-        public async Task<ActionResult<double>> GetValorByIdContaAsync(int idConta) {
-            try {
-                double valor = await _unitOfWork.DespesaRepository.GetValorByIdContaAsync(idConta);
-                return Ok(valor);
             } catch (Exception ex) {
                 throw new Exception(ex.Message);
             }

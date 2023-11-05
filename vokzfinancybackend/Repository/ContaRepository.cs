@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using VokzFinancy.Data;
+using VokzFinancy.DTOs;
 using VokzFinancy.Models;
 using vokzfinancybackend.Repository.Interfaces;
 
@@ -32,7 +33,7 @@ namespace VokzFinancy.Repository
         {
             try
             {
-                Conta conta = await _context.Contas.Include(c => c.Usuario).FirstOrDefaultAsync(c => c.Id == id);
+                Conta conta = await _context.Contas.Include(c => c.Usuario).Include(c => c.Despesas).Include(c => c.Receitas).FirstOrDefaultAsync(c => c.Id == id);
                 return conta;
             }
             catch (Exception ex)
@@ -41,7 +42,7 @@ namespace VokzFinancy.Repository
             }
         }
 
-        public async Task<double> GetDespesasByIdUsuarioAsync(int idConta)
+        public async Task<double> GetDespesasByIdContaAsync(int idConta)
         {   
 
             try {
@@ -55,7 +56,7 @@ namespace VokzFinancy.Repository
 
         }
 
-        public async Task<double> GetReceitasByIdUsuarioAsync(int idConta)
+        public async Task<double> GetReceitasByIdContaAsync(int idConta)
         {
 
             try
@@ -83,7 +84,65 @@ namespace VokzFinancy.Repository
             {
                 throw new Exception(ex.Message);
             }
-        } 
+        }
+
+        public async Task<ReceitaDespesaDTO> GetReceitaDespesaByIdContaAsync(int idConta)
+        {
+            try
+            {
+
+                ReceitaDespesaDTO receitasDespesas = await _context.Contas.Where(c => c.Id == idConta).Select(c => new ReceitaDespesaDTO
+                {
+                    Conta = c,
+                    ValorDespesa = c.Despesas.Sum(x => x.Valor),
+                    ValorReceita = c.Receitas.Sum(x => x.Valor)
+                }).FirstOrDefaultAsync();
+
+                return receitasDespesas;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<ReceitaDespesaDTO> GetReceitaDespesaByIdUsuarioAsync(int idUsuario)
+        {
+            try
+            {
+
+                double valorDespesa = 0;
+                double valorReceita = 0;
+
+                List<Conta> contas = await _context.Contas.Where(c => c.UsuarioId == idUsuario).Include(c => c.Despesas).Include(c => c.Receitas).ToListAsync();
+
+                foreach (Conta conta in contas)
+                {
+
+                    if(conta.Despesas.Any() || conta.Receitas.Any())
+                    {
+
+                        valorDespesa += conta.Despesas.Sum(x => x.Valor);
+                        valorReceita += conta.Receitas.Sum(x => x.Valor);
+
+                    }
+
+                }
+
+                return new ReceitaDespesaDTO
+                {
+                    Conta = new Conta { Nome = "Todas" },
+                    ValorDespesa = valorDespesa,
+                    ValorReceita = valorReceita
+                };
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
     }
 

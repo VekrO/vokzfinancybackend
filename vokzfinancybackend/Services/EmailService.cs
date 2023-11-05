@@ -29,7 +29,7 @@ namespace VokzFinancy.Services {
                 string body = $@"
                     <h2>Vokz Financy</h2><br>
                     <p>Ative sua conta clicando no link abaixo!</p>
-                    /* <a href='https://vokzfinancyfront.vercel.app/verify?token={token}'>Ativar Conta!</a> */
+                    <a href='https://vokzfinancy.app/verify?token={token}'>Ativar Conta!</a>
                 ";
 
                 message.Body = body;

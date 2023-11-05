@@ -160,7 +160,7 @@ namespace VokzFinancy.Controllers
 
             try {   
 
-                double despesas = await _unitOfWork.ContaRepository.GetDespesasByIdUsuarioAsync(id);
+                double despesas = await _unitOfWork.ContaRepository.GetDespesasByIdContaAsync(id);
 
                 return Ok(despesas);
 
@@ -177,7 +177,7 @@ namespace VokzFinancy.Controllers
 
             try {   
 
-                double receitas = await _unitOfWork.ContaRepository.GetReceitasByIdUsuarioAsync(id);
+                double receitas = await _unitOfWork.ContaRepository.GetReceitasByIdContaAsync(id);
                 return Ok(receitas);
 
             } catch (Exception ex) {
@@ -208,13 +208,35 @@ namespace VokzFinancy.Controllers
                 }
 
                 Usuario usuario = await _unitOfWork.UsuarioRepository.GetContasByIdUsuarioAsync(idUsuario);
+                
                 if(usuario.Contas.Count() <= 1) {
                     return BadRequest("Você não pode excluir sua única conta!");
                 }
 
                 await _unitOfWork.BeginTransactionAsync();
+
+                if(conta.Despesas.Any() || conta.Receitas.Any())
+                {
+
+                    // Crie cópias das despesas e receitas
+                    var despesas = conta.Despesas.ToList();
+                    var receitas = conta.Receitas.ToList();
+
+                    foreach (Despesa item in despesas)
+                    {
+                        await _unitOfWork.DespesaRepository.Delete(item);
+                    }
+
+                    foreach (Receita item in receitas)
+                    {
+                        await _unitOfWork.ReceitaRepository.Delete(item);
+                    }
+
+                }
+
                 conta.Usuario = null;
                 conta.UsuarioId = null;
+
                 await _unitOfWork.ContaRepository.Delete(conta);
                 await _unitOfWork.CommitAsync();
 
@@ -247,6 +269,46 @@ namespace VokzFinancy.Controllers
             } catch (Exception ex)
             {
                 throw new Exception(ex.Message);
+            }
+
+        }
+
+        [HttpGet("{id}/valores")]
+        public async Task<ActionResult<ReceitaDespesaDTO>> GetReceitaDespesaByIdContaAsync(int id)
+        {
+
+            try
+            {
+
+                ReceitaDespesaDTO valores = await _unitOfWork.ContaRepository.GetReceitaDespesaByIdContaAsync(id);
+                return Ok(valores);
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+
+            }
+
+        }
+
+        [HttpGet("usuario/{idUsuario}/valores")]
+        public async Task<ActionResult<ReceitaDespesaDTO>> GetReceitaDespesaByIdUsuarioAsync(int idUsuario)
+        {
+
+            try
+            {
+
+                ReceitaDespesaDTO valores = await _unitOfWork.ContaRepository.GetReceitaDespesaByIdUsuarioAsync(idUsuario);
+                return Ok(valores);
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+
             }
 
         }

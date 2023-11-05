@@ -29,7 +29,7 @@ namespace VokzFinancy.Repository
             }
         }
 
-        public async Task<double> GetAllDespesasByIdUsuarioAsync(int idUsuario)
+        public async Task<double> GetAllDespesasByIdUsuarioAsync(int idUsuario, DateTime dtIni, DateTime dtFim)
         {
             try
             {
@@ -41,7 +41,7 @@ namespace VokzFinancy.Repository
                 foreach(Conta conta in contas)
                 {
 
-                    despesas += await _context.Despesas.Where(c => c.ContaId == conta.Id).SumAsync(x => x.Valor);
+                    despesas += await _context.Despesas.Where(c => c.ContaId == conta.Id && c.Vencimento >= dtIni && c.Vencimento <= dtFim).SumAsync(x => x.Valor);
 
                 }
 
@@ -52,7 +52,7 @@ namespace VokzFinancy.Repository
             }
         }
 
-        public async Task<double> GetAllReceitasByIdUsuarioAsync(int idUsuario)
+        public async Task<double> GetAllReceitasByIdUsuarioAsync(int idUsuario, DateTime dtIni, DateTime dtFim)
         {
             try
             {
@@ -64,7 +64,7 @@ namespace VokzFinancy.Repository
                 foreach (var conta in contas)
                 {
 
-                    receitas += await _context.Receitas.Where(c => c.ContaId == conta.Id).SumAsync(x => x.Valor);
+                    receitas += await _context.Receitas.Where(c => c.ContaId == conta.Id && c.Data >= dtIni && c.Data <= dtFim).SumAsync(x => x.Valor);
 
                 }
 
@@ -75,15 +75,14 @@ namespace VokzFinancy.Repository
             }
         }
 
-        public async Task<double> GetAllDespesasByIdUsuarioAndIdContaAsync(int idUsuario, int idConta)
+        public async Task<double> GetAllDespesasByIdUsuarioAndIdContaAsync(int idUsuario, int idConta, DateTime dtIni, DateTime dtFim)
         {
             try
             {
 
                 Conta conta = await _context.Contas.Where(x => x.UsuarioId == idUsuario && x.Id == idConta).FirstOrDefaultAsync();
-                double despesas = await _context.Despesas.Where(x => x.Conta == conta).SumAsync(x => x.Valor);
+                double despesas = await _context.Despesas.Where(x => x.Conta == conta && x.Vencimento >= dtIni && x.Vencimento <= dtFim).SumAsync(x => x.Valor);
                 return despesas;
-
             }
             catch (Exception ex)
             {
@@ -91,13 +90,13 @@ namespace VokzFinancy.Repository
             }
         }
 
-        public async Task<double> GetAllReceitasByIdUsuarioAndIdContaAsync(int idUsuario, int idConta)
+        public async Task<double> GetAllReceitasByIdUsuarioAndIdContaAsync(int idUsuario, int idConta, DateTime dtIni, DateTime dtFim)
         {
             try
             {
 
                 Conta conta = await _context.Contas.Where(x => x.UsuarioId == idUsuario && x.Id == idConta).FirstOrDefaultAsync();
-                double receitas = await _context.Receitas.Where(x => x.Conta == conta).SumAsync(x => x.Valor);
+                double receitas = await _context.Receitas.Where(x => x.Conta == conta && x.Data >= dtIni && x.Data <= dtFim).SumAsync(x => x.Valor);
                 return receitas;
 
             }

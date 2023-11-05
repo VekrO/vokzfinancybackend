@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using VokzFinancy.Data;
+using VokzFinancy.DTOs;
 using VokzFinancy.Models;
 using vokzfinancybackend.Repository.Interfaces;
 
@@ -16,27 +17,17 @@ namespace VokzFinancy.Repository
             _context = context;
         }
 
-        public async Task<IEnumerable<Receita>> GetByIdContaAsync(int idConta) {
+        public async Task<IEnumerable<Receita>> GetByIdContaAsync(int idConta, DateTime dtIni, DateTime dtFim) {
 
             try {
                 
-                 IEnumerable<Receita> receitas = await _context.Receitas.AsNoTracking().Where(x => x.ContaId == idConta).ToListAsync();
+                 IEnumerable<Receita> receitas = await _context.Receitas.AsNoTracking().Where(x => x.ContaId == idConta && x.Data >= dtIni && x.Data <= dtFim).ToListAsync();
                  return receitas;
 
             } catch (Exception ex) {
                 throw new Exception(ex.Message);
             }
 
-        }
-
-        public async Task<double> GetValorByIdUsuarioAsync(int idConta)
-        {
-            try {
-                double valor = await _context.Receitas.Where(x => x.ContaId == idConta).AsNoTracking().SumAsync(x => x.Valor);
-                return valor;
-            } catch (Exception ex) {
-                throw new Exception(ex.Message);
-            }
         }
 
     }

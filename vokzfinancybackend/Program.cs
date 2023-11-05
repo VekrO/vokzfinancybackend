@@ -1,9 +1,11 @@
 using System.Text;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-
+using Newtonsoft.Json;
 using VokzFinancy.Data;
 using VokzFinancy.DTOs.Mapper;
 using VokzFinancy.Services;
@@ -81,6 +83,27 @@ if(app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Adicione o middleware de tratamento de exceções aqui
+app.UseExceptionHandler(app =>
+{
+
+    app.Run(async context =>
+    {
+
+        var exceptionHandler = context.Features.Get<IExceptionHandlerPathFeature>();
+        var exception = exceptionHandler.Error;
+
+        context.Response.StatusCode = 500;
+        context.Response.ContentType = "text/html";
+
+        var response = "Ocorreu um erro interno no servidor. Por favor, tente novamente mais tarde.";
+
+        await context.Response.WriteAsync(exception.Message);
+
+    });
+
+});
 
 app.UseRouting();
 app.UseCors("AllowVokzFinancy");
