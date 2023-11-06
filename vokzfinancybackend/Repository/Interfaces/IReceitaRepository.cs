@@ -8,6 +8,7 @@ namespace vokzfinancybackend.Repository.Interfaces
     {
 
         Task<IEnumerable<Receita>> GetByIdContaAsync(int idUsuario, DateTime dtIni, DateTime dtFim);
+        Task<IEnumerable<Receita>> GetAllReceitasByIdUsuarioAsync(int idUsuario, DateTime dtIni, DateTime dtFim);
 
     }
 

@@ -9,7 +9,7 @@ using VokzFinancy.Models;
 namespace VokzFinancy.Controllers {
 
     [ApiController]
-    // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/v1/[controller]")]
     public class DespesaController : ControllerBase {
 
@@ -164,6 +164,22 @@ namespace VokzFinancy.Controllers {
                 IEnumerable<Despesa> despesas = await _unitOfWork.DespesaRepository.GetVencidoByIdContaAsync(idConta, dtIni, dtFim);
                 IEnumerable<DespesaDTO> despesasDto = _mapper.Map<IEnumerable<Despesa>, IEnumerable<DespesaDTO>>(despesas);
                 return Ok(despesasDto);
+            } catch (Exception ex) {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        [HttpGet("usuario/{idUsuario}/despesas/dtIni/{dtIni}/dtFim/{dtFim}")]
+        public async Task<ActionResult<IEnumerable<DespesaDTO>>> GetAllDespesasByIdUsuarioAsync(int idUsuario, DateTime dtIni, DateTime dtFim)
+        {
+            try
+            {
+
+                IEnumerable<Despesa> despesas = await _unitOfWork.DespesaRepository.GetAllDespesasByIdUsuarioAsync(idUsuario, dtIni, dtFim);
+                IEnumerable<DespesaDTO> despesasDto = _mapper.Map<IEnumerable<Despesa>, IEnumerable<DespesaDTO>>(despesas);
+
+                return Ok(despesasDto);
+
             } catch (Exception ex) {
                 throw new Exception(ex.Message);
             }

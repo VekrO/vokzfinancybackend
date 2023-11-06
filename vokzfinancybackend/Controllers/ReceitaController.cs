@@ -121,6 +121,23 @@ namespace VokzFinancy.Controllers {
             }
         }
 
+        [HttpGet("usuario/{idUsuario}/receitas/dtIni/{dtIni}/dtFim/{dtFim}")]
+        public async Task<ActionResult<IEnumerable<ReceitaDTO>>> GetAllReceitasByIdUsuarioAsync(int idUsuario, DateTime dtIni, DateTime dtFim)
+        {
+            try
+            {
+
+                IEnumerable<Receita> receitas = await _unitOfWork.ReceitaRepository.GetAllReceitasByIdUsuarioAsync(idUsuario, dtIni, dtFim);
+                IEnumerable<ReceitaDTO> receitasDto = _mapper.Map<IEnumerable<Receita>, IEnumerable<ReceitaDTO>>(receitas);
+
+                return Ok(receitasDto);
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
         [HttpGet("conta/{idConta}/dtIni/{dtIni}/dtFim/{dtFim}")]
         public async Task<ActionResult<IEnumerable<DespesaDTO>>> GetByIdUsuarioAsync(int idConta, DateTime dtIni, DateTime dtFim) {

@@ -17,6 +17,49 @@ namespace VokzFinancy.Repository
             _context = context;
         }
 
+        public async Task<IEnumerable<Receita>> GetAllReceitasByIdUsuarioAsync(int idUsuario, DateTime dtIni, DateTime dtFim)
+        {
+            try
+            {
+
+                // Encontra todas as contas do usuário baseando-se no id dele.
+                IEnumerable<Conta> contas = await _context.Contas.Include(x => x.Receitas).Where(x => x.UsuarioId == idUsuario).ToListAsync();
+
+                List<Receita> receitas = new List<Receita>();
+
+                foreach (Conta conta in contas)
+                {
+
+                    if (conta.Receitas.Any())
+                    {
+
+                        foreach (Receita receita in conta.Receitas)
+                        {
+                            if (receita.Data >= dtIni && receita.Data <= dtFim)
+                            {
+                                receitas.Add(receita);
+                            }
+                        }
+
+                    }
+
+                }
+
+                if (receitas.Count > 0)
+                {
+                    receitas.OrderBy(x => x.Data);
+                }
+
+
+                return receitas;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<IEnumerable<Receita>> GetByIdContaAsync(int idConta, DateTime dtIni, DateTime dtFim) {
 
             try {
